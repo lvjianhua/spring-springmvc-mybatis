@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace接口全限定名 -->
+<mapper namespace="com.hfxt.dao.QuestionsDao">
+	<resultMap type="com.hfxt.entity.Questions" id="questionsMap">
+	   <id property="id" column="id"/>
+	     <result property="title" column="title"/>
+	     <result property="etailDesc" column="etailDesc"/>
+	     <result property="answerCount" column="ansCount"/>
+	     <result property="lastModified" column="lastModified"/>
+
+	</resultMap>
+     <select id="getCount" resultType="int">
+       select count(*) from questions
+     </select>
+     <select id="getPagerQuestions" resultMap="questionsMap">
+       select *from questions
+       <trim prefix="where" prefixOverrides="and|or">
+         <if test="questions.title!=null and questions.title!=''">
+            and title like concat('%',#{questions.title},'%')
+         </if>
+       </trim>
+       order by lastModified desc
+       limit #{pageIndex},#{pageSize}
+       
+     </select>
+     <select id="getQuestionsById" resultMap="questionsMap">
+       select *from questions where id=#{id}
+     </select>
+     <insert id="addQuestions">
+       insert into questions(title,etailDesc,ansCount,lastModified)
+       values(#{title},#{etailDesc},#{answerCount},curdate())
+     </insert>
+</mapper>

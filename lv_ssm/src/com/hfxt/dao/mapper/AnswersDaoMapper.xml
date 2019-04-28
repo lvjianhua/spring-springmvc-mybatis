@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace接口全限定名 -->
+<mapper namespace="com.hfxt.dao.AnswersDao">
+	<resultMap type="com.hfxt.entity.Answers" id="answersMap">
+	   <id property="id" column="id"/>
+	   <result property="ansContent" column="ansContent"/>
+	   <result property="ansDate" column="ansDate"/>
+	   <result property="qid" column="qid"/>
+	   <association property="questions" javaType="com.hfxt.entity.Questions">
+	     <id property="id" column="id"/>
+	     <result property="title" column="title"/>
+	     <result property="etailDesc" column="etailDesc"/>
+	     <result property="answerCount" column="ansCount"/>
+	     <result property="lastModified" column="lastModified"/>
+	   </association>
+	</resultMap>
+  <insert id="addAnswers">
+    insert into answers(ansContent,ansDate,qid)
+    values(#{ansContent},curdate(),#{questions.id})
+  </insert>
+  <select id="getAnswersByQid" resultMap="answersMap">
+     select *from answers where qid=#{qid}
+  </select>
+    
+  <select id="getAnsCountByQid" resultType="int">
+    select count(*) from answers where qid=#{qid}
+  </select>
+</mapper>
